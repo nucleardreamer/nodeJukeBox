@@ -28,7 +28,9 @@ main.prototype.init = function (cb){
 	_this.bindSockets();
 	_this.bindAddress();
 	_this.bindSubscriptions(50);
+
     _this.song.init.call(_this, null);
+
     var queue = [];
 
     var loaders = [];
@@ -106,9 +108,17 @@ main.prototype.song = {
     },
     play: function (){
         var _this = this;
-        _this.song.el.src = _this.song.queue[0].replace('public/music','music');
+        var upNext = _this.song.queue[0];
+        _this.song.el.src = upNext.replace('public/music','music');
         console.log(_this.song.el);
         _this.song.el.play();
+        $(_this.opts.metaData).each(function(i,e){
+            if(e.path == upNext){
+                e.duration = _this.song.el.duration
+                $.subpub('song.play')._pub(e);
+            }
+        })
+        
     },
     playing: function(e){
         var _this = this;
@@ -130,6 +140,35 @@ main.prototype.song = {
         },_this.song.transitionTime);
     }
 }
+main.prototype.controls = {
+    init: function(){
+        var _this = this;
+        $('[data-control]').each(function(e,i){
+            var control = $(this).attr('data-control');
+            _this.controls[control].call(_this, $(this));
+        })
+    },
+    status: function(obj){
+        var _this = this;
+        console.log('status')
+        $.subpub('song.play')._sub(function(d){
+            obj.find('.title').text(d.title + ' - ' + d.artist.join(', '));
+            var img = d.path.replace('public/music','music').split('/');
+            img.pop();
+            obj.addClass('on').find('.album').css('background-image','url("'+img.join('/')+'/album.jpg")');
+        });
+        $.subpub('song.playing')._sub(function(d){
+            var sec = new Date(null);
+            sec.setSeconds(Math.round(d.time));
+            var print = moment(sec).format('mm:ss');
+            obj.find('.bar').find('.progress').css('width',(d.time / d.duration * 100)+'%').end().find('.time').text(print);
+        });
+        $.subpub('song.ended')._sub(function(d){
+            obj.find('.progress').css('width','0px');
+            obj.removeClass('on');
+        })
+    }
+}
 main.prototype.renderPages = function (opts, cb) {
     var _this = this;
     var pages = [
@@ -145,6 +184,8 @@ main.prototype.renderPages = function (opts, cb) {
         }));
         _this.onLoadPages[v].call(_this, $('#'+v));
     });
+
+    _this.controls.init.call(_this, null);
 };
 main.prototype.loadTemplates = function (cb) {
     var _this = this;

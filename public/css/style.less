@@ -1,39 +1,32 @@
+@color_dark: rgb(48, 48, 48);
+@color_offdark: rgb(77, 77, 77);
+@color_offwhite: rgb(189, 189, 189);
+@color_white: rgb(247, 247, 247);
+
 @font-face {
-font-family: 'AvenirBold';
-src: url('font/AvenirLTStd-Black.otf') format('opentype');
-font-style: normal;
-font-weight: normal;
+  font-family: 'DINmed';
+  src: url('font/DINCond-Medium.eot'); /* IE9 Compat Modes */
+  src: url('font/DINCond-Medium.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('font/DINCond-Medium.woff') format('woff'), /* Modern Browsers */
+       url('font/DINCond-Medium.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('font/DINCond-Medium.svg#54bc58aaaf4d87e858b892df39ecdecb') format('svg'); /* Legacy iOS */
+  font-style:   normal;
+  font-weight:  400;
 }
+
 @font-face {
-font-family: 'AvenirHeavy';
-src: url('font/AvenirLTStd-Heavy.otf') format('opentype');
-font-style: normal;
-font-weight: normal;
+  font-family: 'DINreg';
+  src: url('font/DINCond-Regular.eot'); /* IE9 Compat Modes */
+  src: url('font/DINCond-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('font/DINCond-Regular.woff') format('woff'), /* Modern Browsers */
+       url('font/DINCond-Regular.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('font/DINCond-Regular.svg#708292701cfa979e49cd78324036f863') format('svg'); /* Legacy iOS */
+       
+  font-style:   normal;
+  font-weight:  400;
 }
-@font-face {
-font-family: 'AvenirLight';
-src: url('font/AvenirLTStd-Light.otf') format('opentype');
-font-style: normal;
-font-weight: normal;
-}
-@font-face {
-font-family: 'AvenirBook';
-src: url('font/AvenirLTStd-Book.otf') format('opentype');
-font-style: normal;
-font-weight: normal;
-}
-@font-face {
-font-family: 'AvenirRoman';
-src: url('font/AvenirLTStd-Roman.otf') format('opentype');
-font-style: normal;
-font-weight: normal;
-}
-@font-face {
-font-family: 'Avenir';
-src: url('font/AvenirLTStd-Medium.otf') format('opentype');
-font-style: normal;
-font-weight: normal;
-}
+
+
 
 *{
 	box-sizing: border-box;
@@ -44,13 +37,14 @@ body,html{
 	width:100%;
 	margin:0;padding:0;
 	overflow: hidden;
+	background-color: @color_dark;
+	color: @color_white;
 }
 
 #container{
-	width:1024px;
-	height:768px;
-	background-color: #ccc;
-	font-family: 'AvenirLight';
+	width:100%;
+	height:100%;
+	font-family: 'DINreg';
 	& > div{
 		height: 100%;
 		width: 100%;
@@ -64,22 +58,85 @@ body,html{
 		position: absolute;
 		top:0;
 		margin-bottom: 10px;
-		background-color: rgb(48, 48, 48);
-		color: rgb(247, 247, 247);
+		color: @color_white;
 		& > div{
+			position: relative;
 			display: inline-block;
 			height: 70px;
 			width: 150px;
 			text-align: center;
 			line-height:70px;
-			margin-top: 15px;
 			margin-left:15px;
-			background-color: rgb(80,80,80);
 			text-transform: uppercase;
 			font-size: 20px;
 			letter-spacing: 2px;
 			&.selected{
-				background-color: rgb(120,120,120);
+				background-color: @color_dark;
+				border-bottom:1px solid @color_white;
+				&:before{
+					content: "";
+					position: absolute;
+					-webkit-transform: rotate(45deg);
+					background-color: #fff;
+					height: 7px;
+					width: 7px;
+					left: 70px;
+					bottom: -4px;
+				}
+			}
+		}
+	}
+	.playing{
+		position: absolute;
+		display: none;
+		bottom:0;
+		background-color: @color_dark;
+		height: 60px;
+		width:100%;
+		padding: 10px 20px 10px 70px;
+		&.on{
+			display:block;
+		}
+		.album{
+			height:50px;
+			width:50px;
+			position: absolute;
+			background-color:@color_offdark;
+			background-size: cover;
+			overflow: hidden;
+			left: 10px;
+			top: 0;
+		}
+		.title{
+			position: absolute;
+			top: 0;
+			left: 70px;
+			color: @color_offwhite;
+			&:before{
+				content: "NOW PLAYING: ";
+				color: @color_white;
+			}
+		}
+		.bar{
+			width: 100%;
+			background-color: @color_offdark;
+			height:2px;
+			margin-top: 30px;
+			.progress{
+				position: relative;
+				background-color: @color_white;
+				height:100%;
+				width:0px;
+				-webkit-transition: width .25s ease;
+				.time{
+					position: absolute;
+					font-size: 12px;
+					text-transform: lowercase;
+					color: @color_offwhite;
+					top: -17px;
+					right: -20px;
+					width: 20px;
+				}
 			}
 		}
 	}
@@ -88,6 +145,7 @@ body,html{
 		height:100%;
 		width:100%;
 		padding-top: 100px;
+		padding-left: 20px;
 		& > div{
 			height: 100%;
 			width: 100%;
