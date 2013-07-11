@@ -1,6 +1,6 @@
 var events = require('events');
 var mc = new events.EventEmitter();
-
+    mc.setMaxListeners(0); 
 var express = require('express'),
     app     = express(),
     colors  = require('colors'),
@@ -55,6 +55,9 @@ app.get('/', function (req, res){
     });
 });
 
+// main song queue
+var queue = [];
+
 // sockets
 io.sockets.on('connection', function (socket) {
     mc.on('ready',function (d){
@@ -63,6 +66,17 @@ io.sockets.on('connection', function (socket) {
     mc.on('metadataParsed', function(_this){
         console.log(_this.store.metaFiles);
         socket.emit('musicData', _this.store.metaFiles);
+    });
+
+    socket.on('song.add',function(path){
+        queue.push(path);
+    })
+    socket.on('song.playing',function(d){
+        console.log(d);
+    })
+    socket.on('song.ended',function(d){
+        queue.shift();
+        console.log(queue);
     })
 });
 
@@ -134,7 +148,7 @@ main.prototype.parseAllFileMeta = function(){
                 }
                 // minor formatting
                 delete r['picture'];
-                r.path = e.replace('public/music','music');
+                r.path = e;
 
                 _this.store.metaFiles.push(r);
             });

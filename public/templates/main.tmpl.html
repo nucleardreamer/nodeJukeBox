@@ -2,8 +2,32 @@
 	<div>queue</div>
 </script>
 <script type="text/javascript" id="#select">
-	<div>select</div>
+	<div class="menu" data-control="menu">
+		<div class="album selected">album</div>
+		<div class="artist">artist</div>
+		<div class="song">song</div>
+		<div class="genre">genre</div>
+	</div>
+	<div class="list" data-control="list">
+		<div class="album selected"></div>
+		<div class="artist"></div>
+		<div class="song"></div>
+		<div class="genre"></div>
+	</div>
 </script>
-<script type="text/javascript" id="#select_item">
-	<div>{{:title}}</div>
+<script type="text/javascript" id="#search">
+	<div>search</div>
+</script>
+
+<script type="text/javascript" id="#select_album">
+	<div data-song="{{:path}}">{{:title}}</div>
+</script>
+<script type="text/javascript" id="#select_artist">
+	<div data-song="{{:path}}">{{:title}}</div>
+</script>
+<script type="text/javascript" id="#select_genre">
+	<div data-song="{{:path}}">{{:title}}</div>
+</script>
+<script type="text/javascript" id="#select_song">
+	<div data-song="{{:path}}">{{:title}}</div>
 </script>

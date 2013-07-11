@@ -1,3 +1,44 @@
+@font-face {
+font-family: 'AvenirBold';
+src: url('font/AvenirLTStd-Black.otf') format('opentype');
+font-style: normal;
+font-weight: normal;
+}
+@font-face {
+font-family: 'AvenirHeavy';
+src: url('font/AvenirLTStd-Heavy.otf') format('opentype');
+font-style: normal;
+font-weight: normal;
+}
+@font-face {
+font-family: 'AvenirLight';
+src: url('font/AvenirLTStd-Light.otf') format('opentype');
+font-style: normal;
+font-weight: normal;
+}
+@font-face {
+font-family: 'AvenirBook';
+src: url('font/AvenirLTStd-Book.otf') format('opentype');
+font-style: normal;
+font-weight: normal;
+}
+@font-face {
+font-family: 'AvenirRoman';
+src: url('font/AvenirLTStd-Roman.otf') format('opentype');
+font-style: normal;
+font-weight: normal;
+}
+@font-face {
+font-family: 'Avenir';
+src: url('font/AvenirLTStd-Medium.otf') format('opentype');
+font-style: normal;
+font-weight: normal;
+}
+
+*{
+	box-sizing: border-box;
+}
+
 body,html{
 	height:100%;
 	width:100%;
@@ -6,8 +47,53 @@ body,html{
 }
 
 #container{
-	& div{
+	width:1024px;
+	height:768px;
+	background-color: #ccc;
+	font-family: 'AvenirLight';
+	& > div{
 		height: 100%;
+		width: 100%;
+		position: relative;
+	}
+}
+#select{
+	.menu{
+		height:100px;
 		width:100%;
+		position: absolute;
+		top:0;
+		margin-bottom: 10px;
+		background-color: rgb(48, 48, 48);
+		color: rgb(247, 247, 247);
+		& > div{
+			display: inline-block;
+			height: 70px;
+			width: 150px;
+			text-align: center;
+			line-height:70px;
+			margin-top: 15px;
+			margin-left:15px;
+			background-color: rgb(80,80,80);
+			text-transform: uppercase;
+			font-size: 20px;
+			letter-spacing: 2px;
+			&.selected{
+				background-color: rgb(120,120,120);
+			}
+		}
+	}
+	.list{
+		position: relative;
+		height:100%;
+		width:100%;
+		padding-top: 100px;
+		& > div{
+			height: 100%;
+			width: 100%;
+			&:not(.selected){
+				display: none;
+			}
+		}
 	}
 }
