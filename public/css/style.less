@@ -50,6 +50,7 @@ body,html{
 		width: 100%;
 		position: relative;
 	}
+	
 }
 #select{
 	.menu{
@@ -151,6 +152,47 @@ body,html{
 			width: 100%;
 			&:not(.selected){
 				display: none;
+			}
+		}
+	}
+}
+#select{
+	.album{
+		& > div{
+			position: relative;	
+			margin-bottom: 20px;
+		}
+		.album_items{
+			margin-left: 65px;
+			counter-reset: section;
+			& > div {
+				background-color: rgb(82, 81, 81);
+				margin: 0px 6px 0px 0px;
+				padding: 5px;
+				display: inline-block;
+				counter-increment: section;
+				&:before { 
+					content: counter(section) " / "; 
+					color: rgb(133, 133, 133);
+				}
+			}
+		}
+		.album_header{
+			.img{
+				height:50px;
+				width: 50px;
+				display: inline-block;
+				vertical-align: top;
+				img {
+					width: 100%;
+				}
+			}
+			h1{
+				margin: 5px 0px 10px 10px;
+				display: inline-block;
+				span{
+					color: @color_offdark;
+				}
 			}
 		}
 	}

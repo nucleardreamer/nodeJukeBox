@@ -29,10 +29,20 @@
 </script>
 
 <script type="text/javascript" id="#select_album">
-	<div data-song="{{:path}}">{{:title}}</div>
+	<div>
+		<div class="album_header">
+			<div class="img"><img src="{{:~processPath(path)}}/album.jpg" /></div>
+			<h1>{{:key}} <span>{{:artist}}</span></h1>
+		</div>
+		<div class="album_items">
+			{{for data}}
+				<div data-song="{{:path}}">{{:title}}</div>
+			{{/for}}
+		</div>
+	</div>
 </script>
 <script type="text/javascript" id="#select_artist">
-	<div data-song="{{:path}}">{{:title}}</div>
+	<div data-song="{{:path}}">{{:key}}</div>
 </script>
 <script type="text/javascript" id="#select_genre">
 	<div data-song="{{:path}}">{{:title}}</div>

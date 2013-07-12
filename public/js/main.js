@@ -39,13 +39,22 @@ main.prototype.init = function (cb){
 
     $.when.apply(this, loaders).done(function () {
         console.log('*** done loading');
-
-		$.get('/api/getFileMD',function(d){
-			_this.opts.metaData = d;
-            console.log(_this.opts.metaData);
-			$.subpub('metaData')._pub({'metaData':d});
+        $.when(
+            $.get('/api/getFileSorted',function(d){
+                console.log(d);
+                _this.opts.metaSorted = d;
+                $.subpub('metaDataSorted')._pub(d);
+            }),
+            $.get('/api/getFileMD',function(d){
+                console.log(d);
+                _this.opts.metaData = d;
+                $.subpub('metaData')._pub({'metaData':d});
+            })
+            
+        ).done(function(){
             _this.renderPages();
-		});
+        });
+	   
     })
 	if(cb)cb();
 };
@@ -109,7 +118,7 @@ main.prototype.song = {
     play: function (){
         var _this = this;
         var upNext = _this.song.queue[0];
-        _this.song.el.src = upNext.replace('public/music','music');
+        _this.song.el.src = _this.replaceMusicPath(upNext);
         console.log(_this.song.el);
         _this.song.el.play();
         $(_this.opts.metaData).each(function(i,e){
@@ -152,8 +161,8 @@ main.prototype.controls = {
         var _this = this;
         console.log('status')
         $.subpub('song.play')._sub(function(d){
-            obj.find('.title').text(d.title + ' - ' + d.artist.join(', '));
-            var img = d.path.replace('public/music','music').split('/');
+            obj.find('.title').text(d.title + ' - ' + d.artist);
+            var img = _this.replaceMusicPath(d.path).split('/');
             img.pop();
             obj.addClass('on').find('.album').css('background-image','url("'+img.join('/')+'/album.jpg")');
         });
@@ -231,7 +240,23 @@ main.prototype.onLoadPages = {
             'song'
         ];
         $.map(lists,function(e,i){
-            $('.list .'+e, obj).html($.render['select_'+e](_this.opts.metaData));
+            var torender = [];
+            if(e !== 'song'){
+                for(key in _this.opts.metaSorted[e]){
+                    torender.push({
+                        key: key,
+                        path: _this.replaceMusicPath(_this.opts.metaSorted[e][key][0].path),
+                        artist: _this.opts.metaSorted[e][key][0].artist,
+                        album: _this.opts.metaSorted[e][key][0].album,
+                        data: _this.opts.metaSorted[e][key]
+                    });
+                }
+                console.log(torender);
+                $('.list .'+e, obj).html($.render['select_'+e](torender));
+            } else {
+                $('.list .'+e, obj).html($.render['select_'+e](_this.opts.metaData));
+            }
+            
         });
     },
     queue: function(obj){
@@ -252,8 +277,18 @@ main.prototype.onLivePages = {
     }
 
 }
-var app;
 
+main.prototype.replaceMusicPath = function(path){
+    return path.replace('public/music','music');
+}
+var app;
+$.views.helpers({
+    processPath: function (val) {
+        val = val.split('/');
+        val.pop();
+        return val.join('/');
+    }
+})
 $(document).ready(function(){
 
 	app = new main({

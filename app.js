@@ -46,6 +46,13 @@ app.get('/api/:call', function (req, res){
     switch(apicall){
         case "getFileMD":
             res.json(_app.store.metaFiles);
+            break;
+        case "getFileSorted":
+            console.log(_app.store.sorted);
+            res.json(_app.store.sorted);
+            break;
+        default:
+            break;
     }
 })
 
@@ -64,10 +71,13 @@ io.sockets.on('connection', function (socket) {
         socket.emit('ready', d);
     })
     mc.on('metadataParsed', function(_this){
-        console.log(_this.store.metaFiles);
         socket.emit('musicData', _this.store.metaFiles);
+        console.log('*** initial metadata parsed'.yellow);
     });
-
+    mc.on('metadataSorted', function(_this){
+        socket.emit('musicDataSorted', _this.store.sorted);
+        console.log('*** initial sorting parsed'.yellow);
+    });
     socket.on('song.add',function(path){
         queue.push(path);
     })
@@ -100,6 +110,7 @@ var main = function(params){
     _this.params = params;
     _this.store = {
         files: null,
+        sorted: {},
         metaFiles: []
     };
     mc.emit('init', _this);
@@ -133,7 +144,7 @@ main.prototype.returnFilesFromMusic = function(){
 }
 
 // parses all mp3 files in store.files, and pushes them in store.metaFiles
-main.prototype.parseAllFileMeta = function(){
+main.prototype.parseAllFileMeta = function(cb){
     var _this = this,
         _files = _this.store.files,
         fs = require('fs'),
@@ -144,15 +155,59 @@ main.prototype.parseAllFileMeta = function(){
             parser.on('metadata', function (r) {
                 if(_files.length == (i+1)){
                     // dev paranoid - need deferreds
-                    setTimeout(function(){ mc.emit('metadataParsed', _this) },100);
-                }
+                    setTimeout(function(){ 
+                        _this.transformAllFiles();
+                        mc.emit('metadataParsed', _this) },500);
+                    }
                 // minor formatting
                 delete r['picture'];
+                r.artist = r.artist.join(',');
+                r.albumartist = r.albumartist.join(',');
+                r.genre = r.genre.join(',');
                 r.path = e;
 
                 _this.store.metaFiles.push(r);
             });
         });
+        if(cb)cb()
+}
+main.prototype.transformAllFiles = function(){
+    var _this = this,
+        toSort = [
+            'album',
+            'genre',
+            'artist'
+        ];
+    toSort.forEach(function(e,i,a){
+        _this.transformFiles(e,function(sorted){
+            if(toSort.length == i+1){
+                setTimeout(function(){ 
+                    mc.emit('metadataSorted', _this);
+                },500)
+            }
+        });
+        
+    })
+}
+main.prototype.transformFiles = function(key, cb){
+    var _this = this;
+    // make the sorted store key
+    if(typeof _this.store.sorted[key] == 'undefined'){
+        _this.store.sorted[key] = {};
+    }
+    keyPointer = _this.store.sorted[key];
+
+    // loop through all files
+    _this.store.metaFiles.forEach(function(e,i,a){
+        // make the key inside sorted 
+        if(typeof keyPointer[e[key]] == 'undefined'){
+            keyPointer[e[key]] = [];
+        }
+        keyPointer[e[key]].push(e);
+        if(_this.store.metaFiles.length == i+1){
+            if(cb)cb(keyPointer);
+        }
+    })
 }
 
 // init logic
@@ -167,6 +222,7 @@ mc.on('init', function(_this){
 mc.on('filesParsed', function(_this){
     console.log('*** initial files parsed'.yellow)
     _this.parseAllFileMeta();
+    
 });
 
 var _app = new main({
