@@ -91,9 +91,6 @@ io.sockets.on('connection', function (socket) {
 });
 
 // socket config
-io.enable("browser client minification");
-io.enable("browser client etag");
-io.enable("browser client gzip");
 io.set("log level", 1);
 io.set("transports", [
     "websocket",
