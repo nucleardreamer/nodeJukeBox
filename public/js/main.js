@@ -91,6 +91,15 @@ main.prototype.bindSubscriptions = function (delay){
         var path = $(this).attr('data-song');
         _this.song.add.call(_this, path);
     })
+    $('.menu > div').live('click',function(){
+        $('.menu > div, .list > div > div').each(function(){
+            $(this).removeClass('selected');
+        });
+        var thisMenu = $(this).attr('class');
+        $(this).addClass('selected');
+        $('.list .'+thisMenu).addClass('selected');
+        console.log(thisMenu);
+    })
 }
 main.prototype.song = {
     selector: '#player',
@@ -253,11 +262,15 @@ main.prototype.onLoadPages = {
                 }
                 console.log(torender);
                 $('.list .'+e, obj).html($.render['select_'+e](torender));
+
             } else {
                 $('.list .'+e, obj).html($.render['select_'+e](_this.opts.metaData));
             }
             
         });
+        setTimeout(function(){
+            _this.iscroll = new iScroll('list');
+        },100)
     },
     queue: function(obj){
 	},
@@ -284,6 +297,7 @@ main.prototype.replaceMusicPath = function(path){
 var app;
 $.views.helpers({
     processPath: function (val) {
+        val = app.replaceMusicPath(val);
         val = val.split('/');
         val.pop();
         return val.join('/');

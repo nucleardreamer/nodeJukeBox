@@ -8,11 +8,13 @@
 		<div class="song">song</div>
 		<div class="genre">genre</div>
 	</div>
-	<div class="list">
+	<div class="list" id="list">
+		<div>
 		<div class="album selected"></div>
 		<div class="artist"></div>
 		<div class="song"></div>
 		<div class="genre"></div>
+		</div>
 	</div>
 	<div class="playing" data-control="status">
 		<div class="title">nothing!</div>
@@ -42,11 +44,29 @@
 	</div>
 </script>
 <script type="text/javascript" id="#select_artist">
-	<div data-song="{{:path}}">{{:key}}</div>
+	<div>
+		<div class="header">
+			<h1>{{:key}}</h1>
+		</div>
+		<div class="items">
+			{{for data}}
+				<div data-song="{{:path}}"><div class="img"><img src="{{:~processPath(path)}}/album.jpg" /></div>{{:title}}<span>{{:album}}</span></div>
+			{{/for}}
+		</div>
+	</div>
 </script>
 <script type="text/javascript" id="#select_genre">
-	<div data-song="{{:path}}">{{:title}}</div>
+	<div>
+		<div class="header">
+			<h1>{{:key}}</h1>
+		</div>
+		<div class="items">
+			{{for data}}
+				<div data-song="{{:path}}"><div class="img"><img src="{{:~processPath(path)}}/album.jpg" /></div>{{:title}}<span>{{:album}}</span></div>
+			{{/for}}
+		</div>
+	</div>
 </script>
 <script type="text/javascript" id="#select_song">
-	<div data-song="{{:path}}">{{:title}}</div>
+	<div data-song="{{:path}}"><div class="img"><img src="{{:~processPath(path)}}/album.jpg" /></div>{{:title}}<span>{{:artist}} on {{:album}}</span></div>
 </script>
