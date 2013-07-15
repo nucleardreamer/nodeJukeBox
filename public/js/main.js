@@ -38,7 +38,6 @@ main.prototype.init = function (cb){
     loaders.push(_this.loadTemplates());
 
     $.when.apply(this, loaders).done(function () {
-        console.log('*** done loading');
         $.when(
             $.get('/api/getFileSorted',function(d){
                 console.log(d);
@@ -85,7 +84,9 @@ main.prototype.bindSubscriptions = function (delay){
 		$('#'+d[0]).show();
         setTimeout(function(){
             _this.onLivePages[d[0]].call(_this, $('#'+d[0]));
+            _this.iscroll.refresh();
         }, delay || 0);
+        
 	});
     $('[data-song]').live('click',function(){
         var path = $(this).attr('data-song');
@@ -99,7 +100,9 @@ main.prototype.bindSubscriptions = function (delay){
         $(this).addClass('selected');
         $('.list .'+thisMenu).addClass('selected');
         _this.iscroll.refresh();
-        console.log(thisMenu);
+    });
+    $('#select .playing').live('click',function(){
+        $.address.value('queue');
     })
 }
 
@@ -120,7 +123,6 @@ main.prototype.song = {
     add: function (d){
         var _this = this;
         _this.song.queue.push(d);
-        console.log(_this.song.queue);
         if(_this.song.queue.length == 1){
             _this.song.play.call(_this);
         }
@@ -130,7 +132,6 @@ main.prototype.song = {
         var _this = this;
         var upNext = _this.song.queue[0];
         _this.song.el.src = _this.replaceMusicPath(upNext);
-        console.log(_this.song.el);
         _this.song.el.play();
         $(_this.opts.metaData).each(function(i,e){
             if(e.path == upNext){
@@ -153,7 +154,6 @@ main.prototype.song = {
         $.subpub('song.ended')._pub({
             path: _this.song.queue.shift()
         });
-        console.log(_this.song.queue);
         setTimeout(function(){
             if(_this.song.queue.length !== 0){
                 _this.song.play.call(_this)
@@ -166,8 +166,7 @@ main.prototype.song = {
         $('[data-control="status"]')
             .find('.title').text('Nothing!').end()
             .find('.bar .progress .time').text('00:00').end()
-            .find('.album').css('background-image','');
-
+            .find('.album, .cont').css('background-image','');
     }
 }
 main.prototype.controls = {
@@ -180,7 +179,6 @@ main.prototype.controls = {
     },
     status: function(obj){
         var _this = this;
-        console.log('status')
         $.subpub('song.play')._sub(function(d){
             obj.find('.title').text(d.title + ' - ' + d.artist);
             var img = _this.replaceMusicPath(d.path).split('/');
@@ -237,7 +235,6 @@ main.prototype.loadTemplates = function (cb) {
         });
         // bind the templates to jsrender
         $.templates(tmpl);
-        console.log('*** templates loaded');
         return dfd.promise();
     });
 };

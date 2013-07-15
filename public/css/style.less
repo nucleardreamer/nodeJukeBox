@@ -267,3 +267,78 @@ body,html{
 		}
 	}
 }
+#queue{
+
+	.playing{
+		position: absolute;
+		bottom:0;
+		width:100%;
+		padding: 20px;
+		height:100%;
+		z-index: 1;
+		&.on{
+			display:block;
+		}
+		.cont{
+			position: absolute;
+			background-image: url('../img/repeat3.png');
+			background-repeat: repeat;
+			top:0;
+			left:0;
+			height:100%;
+			width:100%;
+			z-index: 2;
+			text-align: center;
+		}
+		.album{
+			height: 100%;
+			width: 100%;
+			position: absolute;
+			background-color: @color_offdark;
+			background-size: cover;
+			overflow: hidden;
+			top: 0;
+			left: 0;
+			z-index: 1;
+		}
+		.title{
+			position: relative;
+			color: #FFFFFF;
+			font-size: 40px;
+			margin: 0px auto 0 auto;
+			text-align: center;
+			text-transform: uppercase;
+			display: inline-block;
+			top: 40%;
+			background-color: #292929;
+			padding: 20px;
+			opacity: .9;
+		}
+		.bar{
+			width: 100%;
+			background-color: @color_offdark;
+			height: 31px;
+			position: absolute;
+			bottom: 0px;
+			left: 0;
+			.progress{
+				position: relative;
+				background-color: @color_white;
+				height:100%;
+				width:0px;
+				-webkit-transition: width .25s ease;
+				.time{
+					position: absolute;
+					font-size: 12px;
+					text-transform: lowercase;
+					color: @color_white;
+					top: -22px;
+					right: -30px;
+					width: 30px;
+					padding: 4px;
+					background-color: @color_dark;
+				}
+			}
+		}
+	}
+}
