@@ -90,7 +90,6 @@ body,html{
 	}
 	.playing{
 		position: absolute;
-		display: none;
 		bottom:0;
 		background-color: @color_dark;
 		height: 60px;
@@ -143,12 +142,11 @@ body,html{
 		}
 	}
 	.list{
-		position: relative;
-		height:100%;
-		width:100%;
-		padding-top: 100px;
-		padding-left: 15px;
-		padding-bottom:70px;
+		position: absolute;
+		top: 100px;
+		left: 15px;
+		bottom: 70px;
+		right: 10px;
 		& > div > div{
 			height: 100%;
 			width: 100%;
@@ -172,7 +170,7 @@ body,html{
 				background-color: rgb(82, 81, 81);
 				margin: 0px 6px 10px 0px;
 				padding: 5px;
-				display: inline-block;
+				display: block;
 				counter-increment: section;
 				&:before { 
 					content: counter(section) " /"; 
@@ -253,7 +251,7 @@ body,html{
 				background-color: rgb(82, 81, 81);
 				margin: 0px 6px 10px 0px;
 				padding: 5px;
-				display: inline-block;
+				display: block;
 				&:before { 
 					color: rgb(133, 133, 133);
 					margin-right:10px;

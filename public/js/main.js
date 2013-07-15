@@ -98,6 +98,7 @@ main.prototype.bindSubscriptions = function (delay){
         var thisMenu = $(this).attr('class');
         $(this).addClass('selected');
         $('.list .'+thisMenu).addClass('selected');
+        _this.iscroll.refresh();
         console.log(thisMenu);
     })
 }
