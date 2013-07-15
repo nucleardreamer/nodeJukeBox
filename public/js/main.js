@@ -102,6 +102,7 @@ main.prototype.bindSubscriptions = function (delay){
         console.log(thisMenu);
     })
 }
+
 main.prototype.song = {
     selector: '#player',
     transitionTime: 1000,
@@ -136,8 +137,7 @@ main.prototype.song = {
                 e.duration = _this.song.el.duration
                 $.subpub('song.play')._pub(e);
             }
-        })
-        
+        });
     },
     playing: function(e){
         var _this = this;
@@ -155,8 +155,19 @@ main.prototype.song = {
         });
         console.log(_this.song.queue);
         setTimeout(function(){
-            _this.song.play.call(_this);
+            if(_this.song.queue.length !== 0){
+                _this.song.play.call(_this)
+            } else {
+                _this.song.reset();
+            }
         },_this.song.transitionTime);
+    },
+    reset: function(){
+        $('[data-control="status"]')
+            .find('.title').text('Nothing!').end()
+            .find('.bar .progress .time').text('00:00').end()
+            .find('.album').css('background-image','');
+
     }
 }
 main.prototype.controls = {
